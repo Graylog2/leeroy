@@ -38,7 +38,7 @@ func (g GitHub) IsMergeable(prHook *octokat.PullRequestHook) (mergeable bool, er
 		}
 
 		// set the status
-		if err := g.failureStatus(repo, pr.Head.Sha, "docker/is-mergable", "This PR is not mergable, please fix conflicts.", "https://docs.docker.com/project/work-issue/"); err != nil {
+		if err := g.failureStatus(repo, pr.Head.Sha, "is-mergable", "This PR is not mergable, please fix conflicts.", "https://docs.graylog.org/"); err != nil {
 			return mergeable, err
 		}
 
