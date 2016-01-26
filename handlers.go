@@ -8,8 +8,8 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/crosbymichael/octokat"
-	"github.com/jfrazelle/leeroy/github"
-	"github.com/jfrazelle/leeroy/jenkins"
+	"github.com/Graylog2/leeroy/github"
+	"github.com/Graylog2/leeroy/jenkins"
 )
 
 func pingHandler(w http.ResponseWriter, r *http.Request) {
