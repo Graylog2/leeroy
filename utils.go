@@ -188,7 +188,9 @@ func (c Config) scheduleJenkinsBuild(baseRepo string, number int, build Build) e
 		// setup the parameters
 		htmlUrl := fmt.Sprintf("https://github.com/%s/pull/%d", baseRepo, pr.Number)
 		headRepo := fmt.Sprintf("%s/%s", pr.Head.Repo.Owner.Login, pr.Head.Repo.Name)
-		parameters := fmt.Sprintf("GIT_BASE_REPO=%s&GIT_HEAD_REPO=%s&GIT_SHA1=%s&GITHUB_URL=%s&PR=%d&BASE_BRANCH=%s", baseRepo, headRepo, sha, htmlUrl, pr.Number, pr.Base.Ref)
+		parameters := fmt.Sprintf(
+			"GIT_BASE_REPO=%s&GIT_HEAD_REPO=%s&GIT_SHA1=%s&GITHUB_URL=%s&PR=%d&BASE_BRANCH=%s&HEAD_BRANCH=%s&GIT_BASE_SHA1=%s&GIT_HEAD_SHA1=%s",
+			baseRepo, headRepo, sha, htmlUrl, pr.Number, pr.Base.Ref, pr.Head.Ref, pr.Base.Sha, pr.Head.Sha)
 		// schedule the build
 		if err := j.BuildWithParameters(build.Job, parameters); err != nil {
 			return fmt.Errorf("scheduling jenkins build failed: %v", err)
