@@ -1,0 +1,18 @@
+memo = "ffdc843a48803c6fbd3d90c3986c40bb5c925159a1983467e9443a148b2f286f"
+
+[[projects]]
+  name = "github.com/Sirupsen/logrus"
+  packages = ["."]
+  revision = "ba1b36c82c5e05c4f912a88eab0dcd91a171688f"
+  version = "v0.11.5"
+
+[[projects]]
+  name = "github.com/crosbymichael/octokat"
+  packages = ["."]
+  revision = "dea6d22fe9758677f9f6d56c62a91269705a241f"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/sys"
+  packages = ["unix"]
+  revision = "9ccfe848b9db8435a24c424abbc07a921adf1df5"
