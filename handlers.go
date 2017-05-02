@@ -263,12 +263,17 @@ func handlePush(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// We don't build for created/deleted branches
+	if *pushHook.Deleted || *pushHook.Created {
+		return
+	}
+
 	baseRepo := fmt.Sprintf("%s/%s", *pushHook.Repo.Owner.Name, *pushHook.Repo.Name)
 
 	log.Infof("Received GitHub push notification for %s: %s", baseRepo, *pushHook.After)
 
 	// get the builds
-	builds, err := config.getPushBuilds(baseRepo, false)
+	builds, err := config.getPushBuilds(baseRepo, false, *pushHook.Ref)
 	if err != nil {
 		log.Error(err)
 		w.WriteHeader(500)

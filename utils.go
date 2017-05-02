@@ -19,17 +19,19 @@ type Commit struct {
 }
 
 func (c Config) getPRBuilds(baseRepo string, isCustom bool) (builds []Build, err error) {
-	return c.getBuildsFromList(baseRepo, isCustom, c.Builds)
+	return c.getBuildsFromList(baseRepo, isCustom, "", c.Builds)
 }
 
-func (c Config) getPushBuilds(baseRepo string, isCustom bool) (builds []Build, err error) {
-	return c.getBuildsFromList(baseRepo, isCustom, c.PushBuilds)
+func (c Config) getPushBuilds(baseRepo string, isCustom bool, ref string) (builds []Build, err error) {
+	return c.getBuildsFromList(baseRepo, isCustom, ref, c.PushBuilds)
 }
 
-func (c Config) getBuildsFromList(baseRepo string, isCustom bool, buildList []Build) (builds []Build, err error) {
+func (c Config) getBuildsFromList(baseRepo string, isCustom bool, ref string, buildList []Build) (builds []Build, err error) {
 	for _, build := range buildList {
 		if build.Repo == baseRepo && isCustom == build.Custom {
-			builds = append(builds, build)
+			if build.Ref == "" || build.Ref == ref {
+				builds = append(builds, build)
+			}
 		}
 	}
 

@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	VERSION        = "v1.1.0"
+	VERSION        = "v1.1.1"
 	DEFAULTCONTEXT = "janky"
 )
 
@@ -41,6 +41,7 @@ type Config struct {
 
 type Build struct {
 	Repo         string `json:"github_repo"`
+	Ref          string `json:"ref"`
 	Job          string `json:"jenkins_job_name"`
 	Context      string `json:"context"`
 	Custom       bool   `json:"custom"`
