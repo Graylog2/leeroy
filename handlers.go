@@ -281,8 +281,8 @@ func handlePush(w http.ResponseWriter, r *http.Request) {
 	// get the builds
 	builds, err := config.getPushBuilds(baseRepo, false, *pushHook.Ref)
 	if err != nil {
-		log.Error(err)
-		w.WriteHeader(500)
+		// Getting no matching builds is fine, will happen when the push event does not match the ref
+		w.WriteHeader(200)
 		return
 	}
 
