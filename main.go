@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	VERSION        = "v0.1.0"
+	VERSION        = "v1.1.0"
 	DEFAULTCONTEXT = "janky"
 )
 
