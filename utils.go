@@ -227,12 +227,6 @@ func (c Config) scheduleJenkinsPushBuild(baseRepo string, sha string, build Buil
 		return fmt.Errorf("repo name could not be parsed: %s", baseRepo)
 	}
 
-
-	// update the github status
-	if err := c.updateGithubStatus(baseRepo, build.Context, sha, "pending", "Jenkins build is being scheduled", c.Jenkins.Baseurl); err != nil {
-		return err
-	}
-
 	// setup the jenkins client
 	j := &c.Jenkins
 	// setup the parameters
