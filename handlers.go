@@ -69,15 +69,14 @@ func jenkinsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if j.Build.Parameters.PRNumber == "" {
-		// This is not a pull request, do not update the status on GitHub
-		return
-	}
-
 	// get the build
 	build, err := config.getBuildByJob(j.Name)
 	if err != nil {
 		log.Error(err)
+		return
+	}
+
+	if build.SkipStatusUpdate {
 		return
 	}
 
