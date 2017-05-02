@@ -8,6 +8,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/crosbymichael/octokat"
+	gg "github.com/google/go-github/github"
 	"github.com/graylog-labs/leeroy/github"
 	"github.com/graylog-labs/leeroy/jenkins"
 )
@@ -94,6 +95,8 @@ func githubHandler(w http.ResponseWriter, r *http.Request) {
 		handleIssue(w, r)
 	case "pull_request":
 		handlePullRequest(w, r)
+	case "push":
+		handlePush(w, r)
 	default:
 		fmt.Errorf("Got unknown GitHub notification event type: %s", event)
 	}
@@ -221,7 +224,7 @@ func handlePullRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get the builds
-	builds, err := config.getBuilds(baseRepo, false)
+	builds, err := config.getPRBuilds(baseRepo, false)
 	if err != nil {
 		log.Error(err)
 		w.WriteHeader(500)
@@ -230,7 +233,51 @@ func handlePullRequest(w http.ResponseWriter, r *http.Request) {
 
 	// schedule the jenkins builds
 	for _, build := range builds {
-		if err := config.scheduleJenkinsBuild(baseRepo, pr.Number, build); err != nil {
+		if err := config.scheduleJenkinsPRBuild(baseRepo, pr.Number, build); err != nil {
+			log.Error(err)
+			w.WriteHeader(500)
+		}
+	}
+
+	return
+}
+
+func handlePush(w http.ResponseWriter, r *http.Request) {
+	log.Debugf("Got a push hook")
+
+	// parse the push payload
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Errorf("Error reading github push handler body: %v", err)
+		w.WriteHeader(500)
+		return
+	}
+
+	// We have to use the Google github API here because octokat does not support "created_at" integer fields
+	// which are used in the push hook payload.
+	var pushHook gg.PushEvent
+	err = json.Unmarshal(body, &pushHook)
+	if err != nil {
+		log.Errorf("Error parsing push hook: %v", err)
+		w.WriteHeader(500)
+		return
+	}
+
+	baseRepo := fmt.Sprintf("%s/%s", *pushHook.Repo.Owner.Name, *pushHook.Repo.Name)
+
+	log.Infof("Received GitHub push notification for %s: %s", baseRepo, *pushHook.After)
+
+	// get the builds
+	builds, err := config.getPushBuilds(baseRepo, false)
+	if err != nil {
+		log.Error(err)
+		w.WriteHeader(500)
+		return
+	}
+
+	// schedule the jenkins builds
+	for _, build := range builds {
+		if err := config.scheduleJenkinsPushBuild(baseRepo, *pushHook.After, build); err != nil {
 			log.Error(err)
 			w.WriteHeader(500)
 		}
@@ -281,7 +328,7 @@ func customBuildHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// schedule the jenkins build
-	if err := config.scheduleJenkinsBuild(b.Repo, b.Number, build); err != nil {
+	if err := config.scheduleJenkinsPRBuild(b.Repo, b.Number, build); err != nil {
 		w.WriteHeader(500)
 		log.Error(err)
 		return
@@ -336,7 +383,7 @@ func cronBuildHandler(w http.ResponseWriter, r *http.Request) {
 
 	for _, prNum := range nums {
 		// schedule the jenkins build
-		if err := config.scheduleJenkinsBuild(b.Repo, prNum, build); err != nil {
+		if err := config.scheduleJenkinsPRBuild(b.Repo, prNum, build); err != nil {
 			log.Error(err)
 		}
 	}

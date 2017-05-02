@@ -34,6 +34,7 @@ type Config struct {
 	GHToken      string         `json:"github_token"`
 	GHUser       string         `json:"github_user"`
 	Builds       []Build        `json:"builds"`
+	PushBuilds   []Build        `json:"push_builds"`
 	User         string         `json:"user"`
 	Pass         string         `json:"pass"`
 }

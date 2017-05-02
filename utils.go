@@ -18,8 +18,16 @@ type Commit struct {
 	URL         string `json:"url,omitempty"`
 }
 
-func (c Config) getBuilds(baseRepo string, isCustom bool) (builds []Build, err error) {
-	for _, build := range c.Builds {
+func (c Config) getPRBuilds(baseRepo string, isCustom bool) (builds []Build, err error) {
+	return c.getBuildsFromList(baseRepo, isCustom, c.Builds)
+}
+
+func (c Config) getPushBuilds(baseRepo string, isCustom bool) (builds []Build, err error) {
+	return c.getBuildsFromList(baseRepo, isCustom, c.PushBuilds)
+}
+
+func (c Config) getBuildsFromList(baseRepo string, isCustom bool, buildList []Build) (builds []Build, err error) {
+	for _, build := range buildList {
 		if build.Repo == baseRepo && isCustom == build.Custom {
 			builds = append(builds, build)
 		}
@@ -157,7 +165,7 @@ func (c Config) getShas(owner, name, context string, number int) (shas []string,
 	return shas, pr, nil
 }
 
-func (c Config) scheduleJenkinsBuild(baseRepo string, number int, build Build) error {
+func (c Config) scheduleJenkinsPRBuild(baseRepo string, number int, build Build) error {
 	// make sure we even want to build
 	if build.Job == "" {
 		return nil
@@ -195,6 +203,41 @@ func (c Config) scheduleJenkinsBuild(baseRepo string, number int, build Build) e
 		if err := j.BuildWithParameters(build.Job, parameters); err != nil {
 			return fmt.Errorf("scheduling jenkins build failed: %v", err)
 		}
+	}
+
+	return nil
+}
+
+func (c Config) scheduleJenkinsPushBuild(baseRepo string, sha string, build Build) error {
+	// make sure we even want to build
+	if build.Job == "" {
+		return nil
+	}
+
+	if sha == "" {
+		return fmt.Errorf("sha is missing for: %s", baseRepo)
+	}
+
+	// parse git repo for username
+	// and repo name
+	r := strings.SplitN(baseRepo, "/", 2)
+	if len(r) < 2 {
+		return fmt.Errorf("repo name could not be parsed: %s", baseRepo)
+	}
+
+
+	// update the github status
+	if err := c.updateGithubStatus(baseRepo, build.Context, sha, "pending", "Jenkins build is being scheduled", c.Jenkins.Baseurl); err != nil {
+		return err
+	}
+
+	// setup the jenkins client
+	j := &c.Jenkins
+	// setup the parameters
+	parameters := fmt.Sprintf("GIT_BASE_REPO=%s&GIT_SHA1=%s", baseRepo, sha)
+	// schedule the build
+	if err := j.BuildWithParameters(build.Job, parameters); err != nil {
+		return fmt.Errorf("scheduling jenkins build failed: %v", err)
 	}
 
 	return nil
