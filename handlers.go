@@ -270,7 +270,7 @@ func handlePush(w http.ResponseWriter, r *http.Request) {
 
 	baseRepo := fmt.Sprintf("%s/%s", *pushHook.Repo.Owner.Name, *pushHook.Repo.Name)
 
-	log.Infof("Received GitHub push notification for %s: %s", baseRepo, *pushHook.After)
+	log.Infof("Received GitHub push notification for %s (%s): %s", baseRepo, *pushHook.Ref, *pushHook.After)
 
 	// get the builds
 	builds, err := config.getPushBuilds(baseRepo, false, *pushHook.Ref)
