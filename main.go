@@ -13,11 +13,11 @@ import (
 )
 
 const (
-	VERSION        = "v1.1.3"
 	DEFAULTCONTEXT = "janky"
 )
 
 var (
+	VERSION    string
 	certFile   string
 	keyFile    string
 	port       string
