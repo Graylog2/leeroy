@@ -9,7 +9,7 @@ import (
 	"os"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/Graylog2/leeroy/jenkins"
+	"github.com/graylog-labs/leeroy/jenkins"
 )
 
 const (
