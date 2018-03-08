@@ -44,6 +44,7 @@ type Build struct {
 	Ref              string `json:"ref"`
 	Job              string `json:"jenkins_job_name"`
 	Context          string `json:"context"`
+	StatusLinkFormat string `json:"status_link_format"`
 	Custom           bool   `json:"custom"`
 	HandleIssues     bool   `json:"handle_issues"`
 	SkipStatusUpdate bool   `json:"skip_status_update"`

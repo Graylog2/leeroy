@@ -48,8 +48,10 @@ Below is a sample leeroy config file:
         {
             "github_repo": "docker/docker",
             "jenkins_job_name": "Docker-PRs",
-            "context": "janky" // context to send to github for status (if you
+            "context": "janky", // context to send to github for status (if you
             wanna stack em)
+            "status_link_format": "%s" // format string used to generate details link,
+            defaults to "%s/console"
         }
     ],
 
