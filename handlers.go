@@ -81,11 +81,20 @@ func jenkinsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// update the github status
-	if err := config.updateGithubStatus(j.Build.Parameters.GitBaseRepo, build.Context, j.Build.Parameters.GitSha, state, desc, j.Build.Url+"console"); err != nil {
+	statusUrlDefault := "%s/console"
+	statusUrl := fmt.Sprintf(parameterOrDefault(build.StatusLinkFormat, statusUrlDefault), j.Build.Url)
+	if err := config.updateGithubStatus(j.Build.Parameters.GitBaseRepo, build.Context, j.Build.Parameters.GitSha, state, desc, statusUrl); err != nil {
 		log.Error(err)
 	}
 
 	return
+}
+
+func parameterOrDefault(parameter string, defaultValue string) string {
+	if parameter != "" {
+		return parameter;
+	}
+	return defaultValue;
 }
 
 func githubHandler(w http.ResponseWriter, r *http.Request) {
