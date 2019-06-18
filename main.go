@@ -29,14 +29,15 @@ var (
 )
 
 type Config struct {
-	Jenkins      jenkins.Client `json:"jenkins"`
-	BuildCommits string         `json:"build_commits"`
-	GHToken      string         `json:"github_token"`
-	GHUser       string         `json:"github_user"`
-	Builds       []Build        `json:"builds"`
-	PushBuilds   []Build        `json:"push_builds"`
-	User         string         `json:"user"`
-	Pass         string         `json:"pass"`
+	Jenkins           jenkins.Client `json:"jenkins"`
+	BuildCommits      string         `json:"build_commits"`
+	GHToken           string         `json:"github_token"`
+	GHUser            string         `json:"github_user"`
+	GHPRUserWhiteList []string       `json:"github_pr_user_white_list"`
+	Builds            []Build        `json:"builds"`
+	PushBuilds        []Build        `json:"push_builds"`
+	User              string         `json:"user"`
+	Pass              string         `json:"pass"`
 }
 
 type Build struct {

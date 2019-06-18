@@ -41,7 +41,10 @@ Below is a sample leeroy config file:
     
     "github_token": "YOUR_GITHUB_TOKEN",
     "github_user":  "GITHUB_USER_FOR_ABOVE_TOKEN",
-    
+
+    // Only start a build for the PR if the author is included in the white list
+    "github_pr_user_white_list": ["jane", "john"],
+
     // A list of dicts containing configuration for each GitHub repository &
     // Jenkins job pair you want to join together.
     "builds": [

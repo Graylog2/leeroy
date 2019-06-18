@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/crosbymichael/octokat"
@@ -188,6 +189,19 @@ func handleIssue(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+func userIsWhitelisted(user string) bool {
+	found := false
+
+	for _, whitelistedUser := range config.GHPRUserWhiteList {
+		if strings.TrimSpace(whitelistedUser) == strings.TrimSpace(user) {
+			found = true
+			break
+		}
+	}
+
+	return found
+}
+
 func handlePullRequest(w http.ResponseWriter, r *http.Request) {
 	log.Debugf("Got a pull request hook")
 
@@ -214,6 +228,12 @@ func handlePullRequest(w http.ResponseWriter, r *http.Request) {
 	// ignore everything we don't care about
 	if prHook.Action != "opened" && prHook.Action != "reopened" && prHook.Action != "synchronize" {
 		log.Debugf("Ignoring PR hook action %q", prHook.Action)
+		return
+	}
+
+	if !userIsWhitelisted(prHook.Sender.Login) {
+		log.Errorf("Pull request author <%s> is not included in the white list for automatic Jenkins builds -- not starting build", prHook.Sender.Login)
+		w.WriteHeader(200)
 		return
 	}
 
