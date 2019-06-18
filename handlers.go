@@ -92,9 +92,9 @@ func jenkinsHandler(w http.ResponseWriter, r *http.Request) {
 
 func parameterOrDefault(parameter string, defaultValue string) string {
 	if parameter != "" {
-		return parameter;
+		return parameter
 	}
-	return defaultValue;
+	return defaultValue
 }
 
 func githubHandler(w http.ResponseWriter, r *http.Request) {
