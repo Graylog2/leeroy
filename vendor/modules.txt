@@ -1,0 +1,23 @@
+# github.com/Sirupsen/logrus v0.11.5
+github.com/Sirupsen/logrus
+# github.com/crosbymichael/octokat v0.0.0-20160210183808-dea6d22fe975
+github.com/crosbymichael/octokat
+# github.com/golang/protobuf v0.0.0-20170427213220-18c9bb326172
+github.com/golang/protobuf/proto
+# github.com/google/go-github v0.0.0-20170425170326-e8d46665e050
+github.com/google/go-github/github
+# github.com/google/go-querystring v0.0.0-20170111101155-53e6ce116135
+github.com/google/go-querystring/query
+# golang.org/x/net v0.0.0-20170424220842-da118f7b8e59
+golang.org/x/net/context
+# golang.org/x/sys v0.0.0-20170427041856-9ccfe848b9db
+golang.org/x/sys/unix
+# google.golang.org/appengine v1.0.0
+google.golang.org/appengine
+google.golang.org/appengine/internal
+google.golang.org/appengine/internal/app_identity
+google.golang.org/appengine/internal/modules
+google.golang.org/appengine/internal/base
+google.golang.org/appengine/internal/datastore
+google.golang.org/appengine/internal/log
+google.golang.org/appengine/internal/remote_api

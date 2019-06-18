@@ -1,7 +1,7 @@
 GO ?= go
 
 GIT_TAG = $(shell git describe --tags --abbrev=0 --dirty)
-BUILD_OPTS = -ldflags "-s -X main.VERSION=v$(GIT_TAG)"
+BUILD_OPTS = -ldflags "-s -X main.VERSION=v$(GIT_TAG)" -mod=vendor
 
 all: clean build
 
